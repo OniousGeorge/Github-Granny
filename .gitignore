@@ -1,0 +1,5 @@
+GithubGranny.env
+package-lock.json
+package.json
+dist/
+node_modules/
