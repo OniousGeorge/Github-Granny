@@ -1,3 +1,8 @@
 ### list health
 GET http://localhost:3000/health HTTP/1.1
 
+#### get repo details
+GET http://localhost:3000/repos/damarshah/githubAnalytics HTTP/1.1
+
+#### get repo languages
+GET http://localhost:3000/repos/damarshah/githubAnalytics/languages HTTP/1.1
