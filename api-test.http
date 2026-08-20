@@ -5,4 +5,7 @@ GET http://localhost:3000/health HTTP/1.1
 GET http://localhost:3000/repos/damarshah/githubAnalytics HTTP/1.1
 
 #### get repo languages
-GET http://localhost:3000/repos/OniousGeorge/Github-Granny/commits HTTP/1.1
+GET http://localhost:3000/repos/Kubernetes/Kubernetes/contributors HTTP/1.1
+
+### test
+GET http://localhost:3000/repos/TEST-ROUTE

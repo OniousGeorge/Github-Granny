@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import { healthRouter } from "./routes/health";
 import { githubRepoRouter } from "./routes/githubRepo";
-import { githubUserRouter } from "./routes/getUser";
+//import { githubUserRouter } from "./routes/getUser";
 import cors from "cors";
 import morgan from "morgan";
 import { errorHandler } from "./middleware/errorHandler";
@@ -15,7 +15,8 @@ app.use(morgan("tiny"));
 
 app.use("/health", healthRouter);
 app.use("/repos", githubRepoRouter);
-app.use("/users", githubUserRouter);
+app.use
+//app.use("/users", githubUserRouter);
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 app.use(errorHandler);

@@ -1,5 +1,5 @@
-import StatsCard from "./statsCard";
-import type {Repo} from "../types/github.ts";
+import StatsCard from './StatsCard';
+import type {Repo} from "../../../shared/types/github.ts";
 
 interface statsProps{
     repo:Repo | null
@@ -18,6 +18,7 @@ function StatsGrid({repo}:statsProps)
 
     <StatsCard title='Issues' value={repo.open_issues_count} />
 
+    
   </div>
 )}
 
@@ -27,3 +28,5 @@ function StatsGrid({repo}:statsProps)
 
   
 }
+
+export default StatsGrid;

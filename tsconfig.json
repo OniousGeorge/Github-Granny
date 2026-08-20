@@ -2,8 +2,8 @@
     "extends": "@tsconfig/node24/tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "rootDir": "./src",
+        "rootDir": ".",
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "shared/types"]
 }

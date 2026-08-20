@@ -1,5 +1,5 @@
 
-import type { Repo } from '../types/github.ts';
+import type { Repo } from '../../../shared/types/github.ts';
 
 interface RepoOverviewProps {
     repo: Repo | null; }
