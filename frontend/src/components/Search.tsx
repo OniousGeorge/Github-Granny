@@ -33,6 +33,10 @@ const handlesubmit: SubmitEventHandler<HTMLFormElement> = async (event) =>  {
   event.preventDefault();
   setLoading(true);
   setError(null);
+  setLanguage(null);
+  setContributor(null);
+  setCommit(null);
+  setIssue(null);
   try {
     const data = await getRepo(repoOwner, repoName);
     console.log("Form submitted");

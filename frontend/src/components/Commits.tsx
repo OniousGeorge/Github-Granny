@@ -1,4 +1,5 @@
 import type { CommitList } from "../../../shared/types/commit";
+import { formatDate } from "../utils";
 
 interface commitsProps
 {
@@ -12,7 +13,7 @@ export function Commits({data}:commitsProps)
             {data.map(({ name, date }) => (
                 <li key={name}>
                     <mark>{name}</mark>
-                    <small>{date}</small>
+                    <small>{formatDate(date)}</small>
                 </li>
             ))}
         </ol>

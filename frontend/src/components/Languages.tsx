@@ -1,4 +1,4 @@
-import { PieChart, Pie, Tooltip, Legend, } from "recharts";
+import { PieChart, Pie, Tooltip } from "recharts";
 import type { LanguageData } from "../../../shared/types/languageType";
 
 interface LanguageProps {
@@ -20,29 +20,28 @@ const chartData = Object.entries(data).map(([name, val], index) => ({
    
 
     return (
-        <>
-   <Legend
-    formatter={(value, entry) => {
-        const payload = entry.payload as { val: number };
-
-        const percentage =
-            payload.val < 0.05
-                ? "<0.1"
-                : payload.val.toFixed(1);
-
-        return `${value}: ${percentage}%`;
-    }}
-/>
-         <PieChart width={400} height={400}>
+        <div className="language-chart">
+        <h2>Languages Used</h2>
+         <PieChart width={280} height={190}>
         <Pie
             data={chartData}
             dataKey="val"
             nameKey="name"
+            cx={140}
+            cy={95}
+            outerRadius={68}
         />
         <Tooltip />
-        <Legend />
     </PieChart>
-    </>
+        <ul className="language-legend">
+            {chartData.map(({ name, fill }) => (
+                <li key={name}>
+                    <span style={{ backgroundColor: fill }} />
+                    {name}
+                </li>
+            ))}
+        </ul>
+    </div>
     
 )
 };
