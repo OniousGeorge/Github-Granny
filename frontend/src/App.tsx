@@ -73,7 +73,7 @@ return (
     )}
 
     <div className="lists-grid">
-      {contributors && (
+      {contributors && contributors.length > 0 && (
         <div className={`contributor list-panel ${expandedList === 'contributors' ? 'list-expanded' : ''}`}>
           <button
             className="list-expand-button"
@@ -88,7 +88,7 @@ return (
         </div>
       )}
 
-      {commits && (
+      {commits && commits.length > 0 && (
         <div className={`commits list-panel ${expandedList === 'commits' ? 'list-expanded' : ''}`}>
           <button
             className="list-expand-button"
@@ -103,7 +103,7 @@ return (
         </div>
       )}
 
-      {issues && (
+      {issues && issues.length > 0 && (
         <div className={`issues list-panel ${expandedList === 'issues' ? 'list-expanded' : ''}`}>
           <button
             className="list-expand-button"

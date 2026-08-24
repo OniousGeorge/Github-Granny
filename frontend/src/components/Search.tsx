@@ -39,15 +39,12 @@ const handlesubmit: SubmitEventHandler<HTMLFormElement> = async (event) =>  {
   setIssue(null);
   try {
     const data = await getRepo(repoOwner, repoName);
-    console.log("Form submitted");
     setRepo(data);
     const lang = await getRepoLanguages(repoOwner, repoName);
     setLanguage(lang);
-    console.log("Language Locked")
 
     const contrib = await getContributors(repoOwner, repoName);
     setContributor(contrib);
-    console.log("contributors locked in");
 
     const commit= await getCommits(repoOwner, repoName);
     setCommit(commit);

@@ -1,7 +1,3 @@
 GithubGranny.env
-package-lock.json
-package.json
 dist/
 node_modules/
-api-test.http
-tsconfig.json

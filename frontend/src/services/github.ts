@@ -5,7 +5,7 @@ export async function getRepo(owner: string, repo: string) {
         throw new Error(`Failed to fetch repository: ${res.statusText}`);
     }
     const data = await res.json();
-    console.log(data);
+    
     
     return data;
 }
