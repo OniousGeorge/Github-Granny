@@ -7,6 +7,7 @@ import morgan from "morgan";
 import { errorHandler } from "./middleware/errorHandler";
 import dotenv from "dotenv";
 
+
 const app = express();
 
 app.use(express.json());
@@ -20,7 +21,7 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 app.use(errorHandler);
 
 dotenv.config();
-app.listen(process.env.port, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server is running on port 3000");
 });
 
