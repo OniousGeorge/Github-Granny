@@ -1,40 +1,49 @@
-AWSTemplateFormatVersion: '2010-09-09'
+
+AWSTemplateFormatVersion: "2010-09-09"
+
 Transform: AWS::Serverless-2016-10-31
+
 Description: Template for Lambda Sample.
+
 Parameters:
   EnvName:
     Description: Name of an environment. 'dev', 'staging', 'prod' and any name.
     Type: String
     AllowedPattern: ^.*[^0-9]$
     ConstraintDescription: Must end with non-numeric character.
+
   LambdaHandlerPath:
     Description: Path of a Lambda Handler.
     Type: String
     Default: src/lambda.handler
+
 Resources:
+
   GithubGrannyTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName:
-        Fn::Sub: github-granny-table-${EnvName}
+      TableName: !Sub github-granny-table-${EnvName}
+
       BillingMode: PAY_PER_REQUEST
+
       AttributeDefinitions:
-      - AttributeName: id
-        AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+
       KeySchema:
-      - AttributeName: id
-        KeyType: HASH
+        - AttributeName: id
+          KeyType: HASH
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
+
   GithubGrannyBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName:
-        Fn::Sub: github-granny-bucket-${EnvName}
+      BucketName: !Sub github-granny-bucket-${EnvName}
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -44,18 +53,17 @@ Resources:
         Status: Enabled
       OwnershipControls:
         Rules:
-        - ObjectOwnership: BucketOwnerEnforced
+          - ObjectOwnership: BucketOwnerEnforced
       LifecycleConfiguration:
         Rules:
-        - Id: ExpireOldVersions
-          Status: Enabled
-          NoncurrentVersionExpirationInDays: 30
+          - Id: ExpireOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
   GithubGrannyOAC:
     Type: AWS::CloudFront::OriginAccessControl
     Properties:
       OriginAccessControlConfig:
-        Name:
-          Fn::Sub: github-granny-oac-${EnvName}
+        Name: !Sub github-granny-oac-${EnvName}
         Description: OAC for Github Granny S3 bucket.
         SigningBehavior: always
         SigningProtocol: sigv4
@@ -63,146 +71,146 @@ Resources:
   GithubGrannyBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket:
-        Ref: GithubGrannyBucket
+      Bucket: !Ref GithubGrannyBucket
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: cloudfront.amazonaws.com
-          Action:
-          - s3:GetObject
-          Resource:
-            Fn::Sub: arn:aws:s3:::${GithubGrannyBucket}/*
-          Condition:
-            StringEquals:
-              AWS:SourceArn:
-                Fn::Sub: arn:aws:cloudfront::${AWS::AccountId}:distribution/${GGDistribution}
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action:
+              - s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${GithubGrannyBucket}/*"
+
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${GGDistribution}"
   GGDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Enabled: true
+
         DefaultRootObject: index.html
         Origins:
         - Id: S3Origin
-          DomainName:
-            Fn::GetAtt:
-            - GithubGrannyBucket
-            - RegionalDomainName
+          DomainName: !GetAtt GithubGrannyBucket.RegionalDomainName
           S3OriginConfig: {}
-          OriginAccessControlId:
-            Ref: GithubGrannyOAC
+          OriginAccessControlId: !Ref GithubGrannyOAC
+
         DefaultCacheBehavior:
           TargetOriginId: S3Origin
           ViewerProtocolPolicy: redirect-to-https
           AllowedMethods:
-          - GET
-          - HEAD
+            - GET
+            - HEAD
           CachedMethods:
-          - GET
-          - HEAD
+            - GET
+            - HEAD
+          
           ForwardedValues:
             QueryString: false
+
         PriceClass: PriceClass_100
+
+
+
+
+      
+
+
   GithubPATSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name:
-        Fn::Sub: github-PAT-${EnvName}
+      Name: !Sub github-PAT-${EnvName}
       Description: Github Personal Access Token for Lambda function.
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName:
-        Fn::Sub: lambdaRole-${EnvName}
+      RoleName: !Sub lambdaRole-${EnvName}
       AssumeRolePolicyDocument:
         Statement:
-        - Action:
-          - sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-        Version: '2012-10-17'
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+        Version: "2012-10-17"
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-      - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-      - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
       Path: /
+
   LambdaFunction:
     Type: AWS::Serverless::Function
     Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints:
-        - src/lambda.ts
-        Target: node22
-      SamResourceId: LambdaFunction
       guard:
         SuppressedRules:
-        - LAMBDA_INSIDE_VPC
+          - LAMBDA_INSIDE_VPC
+      
+      BuildMethod: esbuild
+      BuildProperties: 
+        EntryPoints:
+          - src/lambda.ts
+        Target: node22
     Properties:
-      FunctionName:
-        Fn::Sub: lambda-function-${EnvName}
+      FunctionName: !Sub lambda-function-${EnvName}
       Description: LambdaFunction using  nodejs22.x.
       Runtime: nodejs22.x
-      CodeUri: LambdaFunction
-      Handler: LambdaHandlerPath
+      CodeUri: ..
+      Handler: !Sub LambdaHandlerPath
       FunctionUrlConfig:
         AuthType: NONE
+      
       MemorySize: 128
       Timeout: 10
-      Role:
-        Fn::GetAtt:
-        - LambdaRole
-        - Arn
+      Role: !GetAtt LambdaRole.Arn
       Environment:
         Variables:
-          ENV:
-            Ref: EnvName
+          ENV: !Ref EnvName
           TZ: UTC
   GithubGrannyLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName:
-        Fn::Sub: /aws/lambda/lambda-function-${EnvName}
+      LogGroupName: !Sub /aws/lambda/lambda-function-${EnvName}
       RetenetionInDays: 30
   GithubGrannyLambdaErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName:
-        Fn::Sub: github-granny-lambda-errors-${EnvName}
+      AlarmName: !Sub github-granny-lambda-errors-${EnvName}
       AlarmDescription: Lambda error alarm
+
       Namespace: AWS/Lambda
       MetricName: Errors
+
       Dimensions:
-      - Name: FunctionName
-        Value:
-          Ref: LambdaFunction
+        - Name: FunctionName
+          Value: !Ref LambdaFunction
       Statistic: Sum
       Period: 300
       EvaluationPeriods: 1
       Threshold: 1
       ComparisonOperator: GreaterThanOrEqualToThreshold
+
       TreatMissingData: notBreaching
   CloudFront5xxAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName:
-        Fn::Sub: github-granny-cloudfront-5xx-${EnvName}
+      AlarmName: !Sub github-granny-cloudfront-5xx-${EnvName}
       AlarmDescription: Alarm for cloudfront 5xx errors
       Namespace: AWS/CloudFront
       MetricName: 5xxErrorRate
+
       Dimensions:
-      - Name: DistributionId
-        Value:
-          Ref: GGDistribution
-      - Name: Region
-        Value: Global
+        - Name: DistributionId
+          Value: !Ref GGDistribution
+        - Name: Region
+          Value: Global
+
       Statistic: Average
-    Period: 300
+      Period: 300
     EvaluationPeriods: 1
     Threshold: 1
     ComparisonOperator: GreaterThanOrEqualToThreshold
@@ -210,19 +218,20 @@ Resources:
   CloudFront4xxAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName:
-        Fn::Sub: github-granny-cloudfront-4xx-${EnvName}
+      AlarmName: !Sub github-granny-cloudfront-4xx-${EnvName}
       AlarmDescription: Alarm when CloudFront returns 4xx errors.
+
       Namespace: AWS/CloudFront
       MetricName: 4xxErrorRate
+
       Dimensions:
-      - Name: DistributionId
-        Value:
-          Ref: GGDistribution
-      - Name: Region
-        Value: Global
+        - Name: DistributionId
+          Value: !Ref GGDistribution
+        - Name: Region
+          Value: Global
+
       Statistic: Average
-    Period: 300
+      Period: 300
     EvaluationPeriods: 1
     Threshold: 1
     ComparisonOperator: GreaterThanOrEqualToThreshold
@@ -230,17 +239,18 @@ Resources:
   GithubGrannyDynamoDBThrottleAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
-      AlarmName:
-        Fn::Sub: github-granny-dynamodb-throttles-${EnvName}
+      AlarmName: !Sub github-granny-dynamodb-throttles-${EnvName}
       AlarmDescription: Alarm when DynamoDB requests are throttled.
+
       Namespace: AWS/DynamoDB
       MetricName: ThrottledRequests
+
       Dimensions:
-      - Name: TableName
-        Value:
-          Ref: GithubGrannyTable
+        - Name: TableName
+          Value: !Ref GithubGrannyTable
+
       Statistic: Sum
-    Period: 300
+      Period: 300
     EvaluationPeriods: 1
     Threshold: 1
     ComparisonOperator: GreaterThanOrEqualToThreshold
