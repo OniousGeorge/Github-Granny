@@ -175,7 +175,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/lambda/lambda-function-${EnvName}
-      RetenetionInDays: 30
+      RetentionInDays: 30
   GithubGrannyLambdaErrorAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -211,10 +211,10 @@ Resources:
 
       Statistic: Average
       Period: 300
-    EvaluationPeriods: 1
-    Threshold: 1
-    ComparisonOperator: GreaterThanOrEqualToThreshold
-    TreatMissingData: notBreaching
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
   CloudFront4xxAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -232,10 +232,10 @@ Resources:
 
       Statistic: Average
       Period: 300
-    EvaluationPeriods: 1
-    Threshold: 1
-    ComparisonOperator: GreaterThanOrEqualToThreshold
-    TreatMissingData: notBreaching
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
   GithubGrannyDynamoDBThrottleAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -251,7 +251,7 @@ Resources:
 
       Statistic: Sum
       Period: 300
-    EvaluationPeriods: 1
-    Threshold: 1
-    ComparisonOperator: GreaterThanOrEqualToThreshold
-    TreatMissingData: notBreaching
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
