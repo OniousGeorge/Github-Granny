@@ -106,18 +106,13 @@ Resources:
           ForwardedValues:
             QueryString: false
         PriceClass: PriceClass_100
-  GithubPATSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name:
-        Fn::Sub: github-PAT-${EnvName}
-      Description: Github Personal Access Token for Lambda function.
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: lambdaRole-${EnvName}
       AssumeRolePolicyDocument:
+        Version: '2012-10-17'
         Statement:
         - Action:
           - sts:AssumeRole
@@ -125,12 +120,20 @@ Resources:
           Principal:
             Service:
             - lambda.amazonaws.com
-        Version: '2012-10-17'
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
       - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
       Path: /
+      Policies:
+      - PolicyName: SecretsManagerAccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - secretsmanager:GetSecretValue
+            Resource: arn:aws:secretsmanager:us-east-2:018478818543:secret:PAT-0vBP3t
   LambdaFunction:
     Type: AWS::Serverless::Function
     Metadata:
@@ -149,7 +152,13 @@ Resources:
       Description: LambdaFunction using  nodejs22.x.
       Runtime: nodejs22.x
       CodeUri: LambdaFunction
-      Handler: LambdaHandlerPath
+      Handler: lambda.handler
+      Environment:
+        Variables:
+          ENV:
+            Ref: EnvName
+          TZ: UTC
+          GITHUB_SECRET_ARN: arn:aws:secretsmanager:us-east-2:018478818543:secret:PAT-0vBP3t
       FunctionUrlConfig:
         AuthType: NONE
       MemorySize: 128
@@ -158,11 +167,6 @@ Resources:
         Fn::GetAtt:
         - LambdaRole
         - Arn
-      Environment:
-        Variables:
-          ENV:
-            Ref: EnvName
-          TZ: UTC
   GithubGrannyLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:

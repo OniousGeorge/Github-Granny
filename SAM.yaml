@@ -59,6 +59,7 @@ Resources:
           - Id: ExpireOldVersions
             Status: Enabled
             NoncurrentVersionExpirationInDays: 30
+  
   GithubGrannyOAC:
     Type: AWS::CloudFront::OriginAccessControl
     Properties:
@@ -68,6 +69,7 @@ Resources:
         SigningBehavior: always
         SigningProtocol: sigv4
         OriginAccessControlOriginType: s3
+  
   GithubGrannyBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -85,6 +87,7 @@ Resources:
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${GGDistribution}"
+  
   GGDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -112,23 +115,14 @@ Resources:
             QueryString: false
 
         PriceClass: PriceClass_100
-
-
-
-
-      
-
-
-  GithubPATSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: !Sub github-PAT-${EnvName}
-      Description: Github Personal Access Token for Lambda function.
+  
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub lambdaRole-${EnvName}
+
       AssumeRolePolicyDocument:
+        Version: "2012-10-17"
         Statement:
           - Action:
               - sts:AssumeRole
@@ -136,12 +130,24 @@ Resources:
             Principal:
               Service:
                 - lambda.amazonaws.com
-        Version: "2012-10-17"
+        
+
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
-      Path: /
+
+      Path: "/"
+
+      Policies:
+        - PolicyName: SecretsManagerAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                - secretsmanager:GetSecretValue
+                Resource: arn:aws:secretsmanager:us-east-2:018478818543:secret:PAT-0vBP3t
 
   LambdaFunction:
     Type: AWS::Serverless::Function
@@ -159,18 +165,19 @@ Resources:
       FunctionName: !Sub lambda-function-${EnvName}
       Description: LambdaFunction using  nodejs22.x.
       Runtime: nodejs22.x
-      CodeUri: ..
-      Handler: !Sub LambdaHandlerPath
+      CodeUri: .
+      Handler: !Ref LambdaHandlerPath
+      Environment:
+        Variables:
+          ENV: !Ref EnvName
+          TZ: UTC
+          GITHUB_SECRET_ARN: arn:aws:secretsmanager:us-east-2:018478818543:secret:PAT-0vBP3t
       FunctionUrlConfig:
         AuthType: NONE
       
       MemorySize: 128
       Timeout: 10
       Role: !GetAtt LambdaRole.Arn
-      Environment:
-        Variables:
-          ENV: !Ref EnvName
-          TZ: UTC
   GithubGrannyLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:

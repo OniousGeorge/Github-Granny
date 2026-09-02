@@ -1,4 +1,4 @@
-import {octokit} from "../config.js";
+import {getOctokit} from "../config.js";
 import { ContributorData, ContributorList } from "../../shared/types/Contributor.js";
 import { Repo } from "../../shared/types/github.js";
 import { LanguageData } from "../../shared/types/languageType.js";
@@ -9,9 +9,10 @@ import { open } from "node:fs";
 
 export const fetchRepo = async (owner: string, repo: string): Promise<Repo> => {
   try {
+    const octokit=await getOctokit();
     const response = await octokit.rest.repos.get({
       owner,
-      repo
+      repo,
     });
     return response.data;
   } catch (error) {
@@ -23,6 +24,7 @@ export const fetchRepo = async (owner: string, repo: string): Promise<Repo> => {
 
 export const fetchRepoLanguages = async (owner: string, repo: string): Promise<LanguageData> => {
   try {
+    const octokit=await getOctokit();
     const response = await octokit.rest.repos.listLanguages({   
       owner,
       repo
@@ -40,6 +42,7 @@ export const fetchRepoLanguages = async (owner: string, repo: string): Promise<L
 
 export const fetchRepoContributors = async (owner: string, repo: string): Promise<ContributorList> => {
   try {
+    const octokit=await getOctokit();
     const response = await octokit.rest.repos.listContributors({ 
       owner,
       repo
@@ -59,6 +62,7 @@ export const fetchRepoContributors = async (owner: string, repo: string): Promis
 
 export const fetchRepoCommits = async (owner: string, repo: string): Promise<CommitList> => {
   try {
+    const octokit=await getOctokit();
     const response = await octokit.rest.repos.listCommits({
       owner,
       repo,
@@ -80,8 +84,8 @@ export const fetchRepoCommits = async (owner: string, repo: string): Promise<Com
 
 export const fetchRepoIssues = async (owner: string, repo: string): Promise<issueList> => {
   try {
-
-const response = await octokit.request('GET /repos/{owner}/{repo}/issues',{
+    const octokit=await getOctokit();
+    const response = await octokit.request('GET /repos/{owner}/{repo}/issues',{
     owner,
     repo,
     per_page: 5,
