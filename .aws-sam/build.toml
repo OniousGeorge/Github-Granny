@@ -25,4 +25,35 @@ Target = "node22"
 
 
 
+
+
+
+
+
+
+
+
+
+[function_build_definitions.c1d22196-03a0-4ed4-8d5f-be15aaa461f0]
+codeuri = "C:\\Users\\damar\\myProjects\\githubAnalytics"
+runtime = "nodejs22.x"
+architecture = "x86_64"
+handler = "src/snapshot.snapshotHandler"
+manifest_hash = ""
+packagetype = "Zip"
+functions = ["SnapshotFunction"]
+
+[function_build_definitions.c1d22196-03a0-4ed4-8d5f-be15aaa461f0.metadata]
+BuildMethod = "esbuild"
+
+[function_build_definitions.c1d22196-03a0-4ed4-8d5f-be15aaa461f0.metadata.BuildProperties]
+EntryPoints = ["src/snapshot.ts"]
+Target = "node22"
+
+
+
+
+
+
+
 [layer_build_definitions]

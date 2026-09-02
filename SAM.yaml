@@ -27,12 +27,17 @@ Resources:
       BillingMode: PAY_PER_REQUEST
 
       AttributeDefinitions:
-        - AttributeName: id
+        - AttributeName: repo
+          AttributeType: S
+        - AttributeName: timestamp
           AttributeType: S
 
       KeySchema:
-        - AttributeName: id
-          KeyType: HASH
+         - AttributeName: repo
+           KeyType: HASH
+         - AttributeName: timestamp
+           KeyType: RANGE
+
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
@@ -178,6 +183,32 @@ Resources:
       MemorySize: 128
       Timeout: 10
       Role: !GetAtt LambdaRole.Arn
+
+  SnapshotFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        EntryPoints:
+          - src/snapshot.ts
+        Target: node22
+    Properties:
+      FunctionName: !Sub github-granny-snapshot-${EnvName}
+      Runtime: nodejs22.x
+      CodeUri: .
+      Handler: src/snapshot.snapshotHandler
+
+      MemorySize: 128
+      Timeout: 30
+
+      Role: !GetAtt LambdaRole.Arn
+
+      Environment:
+        Variables:
+          ENV: !Ref EnvName
+          TZ: UTC
+          TABLE_NAME: !Sub github-granny-table-${EnvName}
+          GITHUB_SECRET_ARN: arn:aws:secretsmanager:us-east-2:018478818543:secret:PAT-0vBP3t
   GithubGrannyLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
