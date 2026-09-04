@@ -44,6 +44,154 @@ body {
   padding-bottom: 48px;
 }
 
+.app-content {
+  min-width: 0;
+  margin-left: 248px;
+  transition: margin-left 180ms ease;
+}
+
+.App:has(.favorite-repos-collapsed) .app-content {
+  margin-left: 68px;
+}
+
+.favorite-repos {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 248px;
+  flex-direction: column;
+  padding: 32px 20px;
+  color: #fff;
+  background: var(--granny-slate);
+  box-shadow: 8px 0 22px rgb(17 17 17 / 18%);
+  transition: width 180ms ease;
+}
+
+.favorite-repos-collapsed {
+  width: 68px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.favorite-repos-panel,
+.favorite-repos nav {
+  overflow: hidden;
+  transition: opacity 120ms ease;
+}
+
+.favorite-repos-collapsed .favorite-repos-panel,
+.favorite-repos-collapsed nav {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.favorite-repos-toggle {
+  align-self: flex-end;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 24px;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 6px;
+  color: #fff;
+  background: rgb(255 255 255 / 8%);
+  cursor: pointer;
+  font: 700 1.1rem/1 Georgia, 'Times New Roman', serif;
+}
+
+.favorite-repos-toggle:hover,
+.favorite-repos-toggle:focus-visible {
+  border-color: var(--granny-coral);
+  background: var(--granny-coral-deep);
+}
+
+.favorite-repos-toggle:focus-visible {
+  outline: 2px solid var(--granny-coral);
+  outline-offset: 2px;
+}
+
+.favorite-repos-kicker {
+  margin: 0 0 12px;
+  color: var(--granny-coral);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.favorite-repos h2 {
+  margin: 0 0 26px;
+  color: #fff;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.favorite-repos ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.favorite-repos button {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 6px;
+  color: #fff;
+  background: rgb(255 255 255 / 7%);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.favorite-repos button:hover,
+.favorite-repos button:focus-visible {
+  border-color: var(--granny-coral);
+  background: var(--granny-coral-deep);
+  transform: translateX(3px);
+}
+
+.favorite-repos button.favorite-repo-selected {
+  border-color: var(--granny-coral);
+  background: var(--granny-coral-deep);
+}
+
+.favorite-repos button:focus-visible {
+  outline: 2px solid var(--granny-coral);
+  outline-offset: 2px;
+}
+
+.favorite-repos .favorite-repos-toggle {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  margin: -8px -8px 24px auto;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 28%);
+  border-radius: 7px;
+  color: #fff;
+  background: transparent;
+  font-family: Arial, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.favorite-repos .favorite-repos-toggle:hover,
+.favorite-repos .favorite-repos-toggle:focus-visible {
+  border-color: var(--granny-coral);
+  background: rgb(168 85 247 / 18%);
+  transform: scale(1.06);
+}
+
 .githubGranny {
   position: relative;
   padding: 32px 20px 28px;
@@ -141,6 +289,192 @@ body {
   color: var(--granny-coral-deep);
   font-size: 1.1rem;
   text-align: center;
+}
+
+.comparison-wrapper,
+.comparison-error {
+  width: min(100% - 32px, 960px);
+  margin: 28px auto 0;
+}
+
+.comparison-error {
+  color: var(--granny-coral-deep);
+  font-weight: 700;
+  text-align: center;
+}
+
+.repo-comparison {
+  overflow: hidden;
+  border: 1px solid rgb(126 34 206 / 22%);
+  border-radius: 10px;
+  background: var(--granny-paper);
+  box-shadow: 0 12px 24px rgb(88 28 135 / 12%);
+}
+
+.comparison-heading {
+  position: relative;
+  padding: 22px 24px;
+  border-bottom: 1px solid #e9d5ff;
+}
+
+.comparison-close-button {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(88 28 135 / 24%);
+  border-radius: 6px;
+  color: var(--granny-coral-deep);
+  background: transparent;
+  cursor: pointer;
+  font: 700 1.1rem/1 Arial, sans-serif;
+}
+
+.comparison-close-button:hover,
+.comparison-close-button:focus-visible {
+  color: #fff;
+  background: var(--granny-coral-deep);
+}
+
+.comparison-close-button:focus-visible {
+  outline: 2px solid var(--granny-coral);
+  outline-offset: 2px;
+}
+
+.comparison-kicker,
+.comparison-label {
+  margin: 0;
+  color: var(--granny-coral-deep);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.comparison-heading h2,
+.comparison-column h3,
+.comparison-differences h3 {
+  margin: 6px 0 0;
+  color: var(--granny-slate);
+}
+
+.comparison-heading h2 {
+  font-size: 1.6rem;
+}
+
+.comparison-heading > p:last-child {
+  margin: 8px 0 0;
+  color: var(--granny-muted);
+  line-height: 1.45;
+}
+
+.comparison-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.comparison-column {
+  padding: 20px 24px;
+}
+
+.comparison-snapshot {
+  border-right: 1px solid #e9d5ff;
+  background: #fffaf5;
+}
+
+.comparison-live {
+  background: #f8fbff;
+}
+
+.comparison-column h3,
+.comparison-differences h3 {
+  font-size: 1.2rem;
+}
+
+.comparison-language-chart {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 8px;
+}
+
+.comparison-language-legend {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  color: var(--granny-muted);
+  font-size: 0.78rem;
+  list-style: none;
+}
+
+.comparison-language-legend li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.comparison-language-legend li span {
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.comparison-empty-chart {
+  margin: 18px 0;
+  color: var(--granny-muted);
+  font-size: 0.9rem;
+}
+
+.comparison-stat,
+.difference-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 0;
+}
+
+.difference-stat {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.comparison-stat span,
+.difference-stat span {
+  color: var(--granny-muted);
+}
+
+.comparison-stat strong,
+.difference-stat strong {
+  color: var(--granny-slate);
+  font-size: 1.25rem;
+}
+
+.comparison-differences {
+  padding: 20px 24px 24px;
+  border-top: 1px solid #e9d5ff;
+  background: #f4efff;
+}
+
+.difference-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.difference-stat strong {
+  color: var(--granny-coral-deep);
+}
+
+.difference-stat strong.difference-negative {
+  color: #b42318;
 }
 
 .search form,
@@ -464,6 +798,49 @@ body {
 }
 
 @media (max-width: 480px) {
+  .app-content {
+    margin-left: 0;
+  }
+
+  .App:has(.favorite-repos-collapsed) .app-content {
+    margin-left: 0;
+  }
+
+  .favorite-repos {
+    position: static;
+    width: 100%;
+    padding: 24px 16px 20px;
+  }
+
+  .favorite-repos-collapsed {
+    width: 100%;
+    min-height: 72px;
+    padding: 20px 16px;
+  }
+
+  .favorite-repos-collapsed .favorite-repos-toggle {
+    margin-bottom: 0;
+  }
+
+  .comparison-columns,
+  .difference-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-snapshot {
+    border-right: 0;
+    border-bottom: 1px solid #e9d5ff;
+  }
+
+  .favorite-repos h2 {
+    max-width: 280px;
+    margin-bottom: 18px;
+  }
+
+  .favorite-repos ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .githubGranny-logo {
     right: 12px;
     width: 56px;
